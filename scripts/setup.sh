@@ -91,7 +91,7 @@ ENDPOINT=http://localhost:4566/restapis/${API_ID}/${STAGE}/_user_request_
 
 echo "API available at: ${ENDPOINT}"
 echo
-echo "Testing: GET ${ENDPOINT}/ping"
-curl -i ${ENDPOINT}/ping
+echo "Testing: GET ${ENDPOINT}/test/1/request?message=hi"
+curl -i ${ENDPOINT}/test/1/request?message=hi
 
 [ $? == 0 ] || fail 10 "Failed: curl / GET"

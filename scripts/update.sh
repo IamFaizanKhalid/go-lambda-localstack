@@ -7,7 +7,7 @@ GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${API_NAME} .
 [ $? == 0 ] || fail 1 "Failed: Go / build / ${API_NAME}"
 
 
-zip -r ${API_NAME}.zip ./bin/*
+zip -r ${API_NAME}.zip ${API_NAME}
 
 [ $? == 0 ] || fail 2 "Failed: zip / ${API_NAME}"
 

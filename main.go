@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/apex/gateway"
+	"github.com/go-chi/chi/v5"
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -24,18 +24,20 @@ func init() {
 }
 
 func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", ping)
+	r := chi.NewRouter()
 
-	err := gateway.ListenAndServe("", mux)
+	r.HandleFunc("/test/{testId}/request", ping)
+
+	err := gateway.ListenAndServe("", r)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func ping(w http.ResponseWriter, _ *http.Request) {
+func ping(w http.ResponseWriter, r *http.Request) {
 	resp := &response{
-		Timestamp: time.Now().UTC(),
+		Id:      chi.URLParam(r, "testId"),
+		Message: r.URL.Query().Get("message"),
 	}
 
 	body, _ := json.Marshal(resp)
@@ -48,5 +50,6 @@ func ping(w http.ResponseWriter, _ *http.Request) {
 }
 
 type response struct {
-	Timestamp time.Time `json:"timestamp"`
+	Id      string `json:"id"`
+	Message string `json:"message"`
 }

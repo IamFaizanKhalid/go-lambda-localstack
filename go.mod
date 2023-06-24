@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/apex/gateway v1.1.2
+	github.com/go-chi/chi/v5 v5.0.8
 	github.com/gomodule/redigo v1.8.9
 )
 
