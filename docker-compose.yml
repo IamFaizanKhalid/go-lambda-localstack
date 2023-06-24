@@ -1,0 +1,41 @@
+version: "3.3"
+
+services:
+  # not using elasticache from localstack as it is a pro feature
+  my-cache:
+    container_name: my-cache
+    restart: unless-stopped
+    image: redis:alpine
+    # using a bridge network to make it accessible to localstack container
+    networks:
+      - my-local-network
+    ports:
+      - "6379:6379"
+
+  my-localstack:
+    container_name: my-localstack
+    image: localstack/localstack
+    networks:
+      - my-local-network
+    ports:
+      - "4566-4620:4566-4620"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - SERVICES=lambda
+      - DEFAULT_REGION=us-west-2
+      - LAMBDA_EXECUTOR=docker
+      - LAMBDA_REMOTE_DOCKER=true
+      - LAMBDA_REMOVE_CONTAINERS=true
+      - DATA_DIR=${DATA_DIR- }
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DEBUG=${DEBUG- }
+      - PORT_WEB_UI=${PORT_WEB_UI- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  my-local-network:
+    driver: bridge
